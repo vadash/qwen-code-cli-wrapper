@@ -15,6 +15,7 @@ interface RawChatRequest {
 	presence_penalty?: unknown;
 	frequency_penalty?: unknown;
 	seed?: unknown;
+	reasoning_effort?: unknown;
 }
 
 // Type guard to check if value is a plain object
@@ -88,6 +89,17 @@ function validateOptionalBoolean(value: unknown, fieldName: string): boolean | u
 	return value;
 }
 
+const VALID_REASONING_EFFORTS = ['auto', 'low', 'medium', 'high'] as const;
+type ReasoningEffort = typeof VALID_REASONING_EFFORTS[number];
+
+function validateReasoningEffort(value: unknown): ReasoningEffort | undefined {
+	if (value === undefined) return undefined;
+	if (typeof value !== 'string' || !VALID_REASONING_EFFORTS.includes(value as ReasoningEffort)) {
+		throw new Error(`reasoning_effort must be one of: ${VALID_REASONING_EFFORTS.join(', ')}`);
+	}
+	return value as ReasoningEffort;
+}
+
 export function validateChatBody(body: unknown): ChatCompletionsBody {
 	if (!isObject(body)) {
 		throw new Error('Request body must be a JSON object');
@@ -117,6 +129,7 @@ export function validateChatBody(body: unknown): ChatCompletionsBody {
 	const maxTokens = validateOptionalNumber(rawBody.max_tokens, 'max_tokens', 1);
 	const presencePenalty = validateOptionalNumber(rawBody.presence_penalty, 'presence_penalty', -2, 2);
 	const frequencyPenalty = validateOptionalNumber(rawBody.frequency_penalty, 'frequency_penalty', -2, 2);
+	const reasoningEffort = validateReasoningEffort(rawBody.reasoning_effort);
 
 	// Build validated result
 	const result: ChatCompletionsBody = {
@@ -129,6 +142,7 @@ export function validateChatBody(body: unknown): ChatCompletionsBody {
 	if (maxTokens !== undefined) result.max_tokens = maxTokens;
 	if (presencePenalty !== undefined) result.presence_penalty = presencePenalty;
 	if (frequencyPenalty !== undefined) result.frequency_penalty = frequencyPenalty;
+	if (reasoningEffort !== undefined) result.reasoning_effort = reasoningEffort;
 
 	return result;
 }

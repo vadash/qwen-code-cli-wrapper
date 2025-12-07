@@ -24,5 +24,6 @@ export function toUpstreamPayload(body: ChatCompletionsBody, model: string): Ups
 		presence_penalty: body.presence_penalty,
 		frequency_penalty: body.frequency_penalty,
 		seed: body.seed,
+		reasoning_effort: body.reasoning_effort,
 	};
 }

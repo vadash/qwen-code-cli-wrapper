@@ -32,6 +32,7 @@ export interface ChatCompletionsBody {
 	presence_penalty?: number;
 	frequency_penalty?: number;
 	seed?: number;
+	reasoning_effort?: 'auto' | 'low' | 'medium' | 'high';
 }
 
 export interface UpstreamChatCreate {
@@ -44,6 +45,7 @@ export interface UpstreamChatCreate {
 	presence_penalty?: number;
 	frequency_penalty?: number;
 	seed?: number;
+	reasoning_effort?: 'auto' | 'low' | 'medium' | 'high';
 }
 
 export interface ChatCompletionResponse {
